@@ -50,9 +50,11 @@ void SoftmaxWithLossLayer<Dtype>::Forward_gpu(
       CAFFE_CUDA_NUM_THREADS>>>(nthreads, prob_data, label, loss_data,
       outer_num_, dim, inner_num_, has_ignore_label_, ignore_label_, counts);
   Dtype loss;
+  LOG(INFO) << nthreads << " " << bottom[0]->count(0, 1) << " " << bottom[0]->count(1, 2);
   caffe_gpu_asum(nthreads, loss_data, &loss);
   if (normalize_) {
     Dtype count;
+    LOG(INFO) << nthreads << " " << prob_.count(0, 1) << " " << prob_.count(1, 2);
     caffe_gpu_asum(nthreads, counts, &count);
     loss /= (count > 0 ? count : Dtype(1));
   } else {
